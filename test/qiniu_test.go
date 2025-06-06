@@ -19,11 +19,11 @@ func TestUploadFile(t *testing.T) {
 		Region:    "z0",
 	})
 
-	file, _ := os.Open("test.jpg")
+	file, _ := os.Open("test.png")
 	defer file.Close()
 
 	// 上传文件
-	url, err := client.UploadFile(file, "myfile.jpg")
+	url, err := client.UploadFile(file, "myfile.png")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -15,8 +15,12 @@ type QiniuClient struct {
 }
 
 func NewClient(cfg QiniuConfig) *QiniuClient {
-	putPolicy := storage.PutPolicy{Scope: cfg.Bucket}
 	mac := qbox.NewMac(cfg.AccessKey, cfg.SecretKey)
+	putPolicy := storage.PutPolicy{
+		Scope: cfg.Bucket,
+		// 1小时有效期
+		Expires: 3600,
+	}
 	token := putPolicy.UploadToken(mac)
 
 	cfgs := storage.Config{}
@@ -27,8 +31,6 @@ func NewClient(cfg QiniuConfig) *QiniuClient {
 		cfgs.Zone = &storage.ZoneHuadong
 	case "z2":
 		cfgs.Zone = &storage.ZoneHuanan
-	//case "na0":
-	//	cfgs.Zone = &storage.ZoneNa0
 	default:
 		cfgs.Zone = &storage.ZoneHuadong
 	}

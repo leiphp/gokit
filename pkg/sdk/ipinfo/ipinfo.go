@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"strings"
 )
 
 // IPResponse 用于 IP 查询
@@ -18,18 +20,32 @@ type IPResponse struct {
 	Message    string `json:"message"` // 失败时返回
 }
 
+var ipProviders = []string{
+	"https://api.myip.la",
+	"https://api.ip.sb/ip",
+	"http://checkip.amazonaws.com",
+}
+
 // GetPublicIP 获取本机公网 IP
 func GetPublicIP() (string, error) {
-	resp, err := http.Get("https://api.ipify.org")
-	if err != nil {
-		return "", err
+	for _, api := range ipProviders {
+		resp, err := http.Get(api)
+		if err != nil {
+			continue
+		}
+		defer resp.Body.Close()
+
+		ipBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			continue
+		}
+
+		ip := strings.TrimSpace(string(ipBytes))
+		if net.ParseIP(ip) != nil {
+			return ip, nil
+		}
 	}
-	defer resp.Body.Close()
-	ip, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(ip), nil
+	return "", fmt.Errorf("所有公网 IP 提供者请求失败")
 }
 
 // GetIPLocation 查询 IP 的位置信息

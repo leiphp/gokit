@@ -1,12 +1,14 @@
 package lcache
 
 import (
-	"github.com/rogpeppe/go-internal/cache"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 )
 
 var c *cache.Cache
 
+// Init 初始化缓存，设置默认过期时间和清理周期
 func Init(defaultExpiration, cleanupInterval time.Duration) {
 	c = cache.New(defaultExpiration, cleanupInterval)
 }
@@ -17,4 +19,12 @@ func Set(key string, value interface{}, d time.Duration) {
 
 func Get(key string) (interface{}, bool) {
 	return c.Get(key)
+}
+
+func Delete(key string) {
+	c.Delete(key)
+}
+
+func Flush() {
+	c.Flush()
 }

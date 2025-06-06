@@ -27,8 +27,8 @@ func NewClient(cfg QiniuConfig) *QiniuClient {
 		cfgs.Zone = &storage.ZoneHuadong
 	case "z2":
 		cfgs.Zone = &storage.ZoneHuanan
-	case "na0":
-		cfgs.Zone = &storage.ZoneNa0
+	//case "na0":
+	//	cfgs.Zone = &storage.ZoneNa0
 	default:
 		cfgs.Zone = &storage.ZoneHuadong
 	}

@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/leiphp/gokit/pkg/core/httpclient"
 	"github.com/leiphp/gokit/pkg/core/mysql"
 	"github.com/leiphp/gokit/pkg/core/redis"
 	"github.com/leiphp/gokit/pkg/core/tracing"
@@ -21,6 +20,4 @@ func TestCore(t *testing.T) {
 	redis.Set(ctx, "key", "value")
 	val, _ := redis.Get(ctx, "key")
 	fmt.Println("val:", val)
-	body, _ := httpclient.Get("https://httpbin.org/get")
-	fmt.Println("body:", body)
 }

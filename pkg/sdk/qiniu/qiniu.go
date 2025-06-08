@@ -2,10 +2,10 @@ package qiniu
 
 import (
 	"context"
-	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
 	"mime/multipart"
+	"time"
 )
 
 type QiniuClient struct {
@@ -56,7 +56,18 @@ func (qc *QiniuClient) UploadFile(file multipart.File, filename string) (string,
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%s/%s", qc.Config.Domain, ret.Key), nil
+	//return fmt.Sprintf("%s/%s", qc.Config.Domain, ret.Key), nil
+	// 使用私有链接
+	return qc.PrivateURL(ret.Key, 3600), nil
+}
+
+// PrivateURL 生成私有空间可访问的带签名 URL
+func (qc *QiniuClient) PrivateURL(key string, expiresInSeconds int64) string {
+	mac := qbox.NewMac(qc.Config.AccessKey, qc.Config.SecretKey)
+	//deadline := time.Now().Add(time.Hour).Unix() // 1小时有效期
+	deadline := time.Now().Unix() + expiresInSeconds
+	privateAccessURL := storage.MakePrivateURL(mac, qc.Config.Domain, key, deadline)
+	return privateAccessURL
 }
 
 // GetToken 公共的 GetToken 方法，供前端获取上传凭证

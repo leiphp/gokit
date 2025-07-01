@@ -93,3 +93,15 @@ func InitLogger() {
 
 	Logger = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 }
+
+func Info(msg string, fields ...zap.Field) {
+	Logger.WithOptions(zap.AddCallerSkip(1)).Info(msg, fields...)
+}
+
+func Error(msg string, fields ...zap.Field) {
+	Logger.WithOptions(zap.AddCallerSkip(1)).Error(msg, fields...)
+}
+
+func Warn(msg string, fields ...zap.Field) {
+	Logger.WithOptions(zap.AddCallerSkip(1)).Warn(msg, fields...)
+}

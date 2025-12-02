@@ -52,7 +52,10 @@ func (qc *QiniuClient) UploadFile(file multipart.File, filename string) (string,
 	ret := storage.PutRet{}
 	putExtra := storage.PutExtra{}
 
-	err := qc.Uploader.Put(context.Background(), &ret, qc.Token, filename, file, -1, &putExtra)
+	// 每次上传前都生成新的 token
+	token := qc.generateToken()
+
+	err := qc.Uploader.Put(context.Background(), &ret, token, filename, file, -1, &putExtra)
 	if err != nil {
 		return "", err
 	}
